@@ -1,0 +1,18 @@
+[submodule "ofxSyphon"]
+	path = addons/ofxSyphon
+	url = git@github.com:astellato/ofxSyphon.git
+[submodule "ofxParamEdit"]
+	path = addons/ofxParamEdit
+	url = git@github.com:nariakiiwatani/ofxParamEdit.git
+[submodule "ofxAE"]
+	path = addons/ofxAE
+	url = git@github.com:nariakiiwatani/ofxAE.git
+[submodule "ofxMask"]
+	path = addons/ofxMask
+	url = git@github.com:nariakiiwatani/ofxMask.git
+[submodule "ofxJSON"]
+	path = addons/ofxJSON
+	url = git@github.com:jefftimesten/ofxJSON.git
+[submodule "ofxArtnet"]
+	path = addons/ofxArtnet
+	url = git@github.com:hiroyuki/ofxArtnet.git
