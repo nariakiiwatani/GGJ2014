@@ -38,6 +38,12 @@
 		81421DDD1893ACBD00E5AA79 /* Man.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DDB1893ACBD00E5AA79 /* Man.cpp */; };
 		81421DE01893AD5100E5AA79 /* Board.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DDE1893AD5100E5AA79 /* Board.cpp */; };
 		81421DE31893AFD600E5AA79 /* Tuio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DE11893AFD600E5AA79 /* Tuio.cpp */; };
+		81421DE618941EBA00E5AA79 /* Pawn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DE418941EBA00E5AA79 /* Pawn.cpp */; };
+		81421DE918941F6900E5AA79 /* Rook.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DE718941F6900E5AA79 /* Rook.cpp */; };
+		81421DEC1894248800E5AA79 /* Bishop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DEA1894248800E5AA79 /* Bishop.cpp */; };
+		81421DEF189427B000E5AA79 /* Queen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DED189427B000E5AA79 /* Queen.cpp */; };
+		81421DF21894286000E5AA79 /* King.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DF01894286000E5AA79 /* King.cpp */; };
+		81421DF5189428A900E5AA79 /* Knight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DF3189428A900E5AA79 /* Knight.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -167,6 +173,18 @@
 		81421DDF1893AD5100E5AA79 /* Board.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Board.h; sourceTree = "<group>"; };
 		81421DE11893AFD600E5AA79 /* Tuio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tuio.cpp; sourceTree = "<group>"; };
 		81421DE21893AFD600E5AA79 /* Tuio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tuio.h; sourceTree = "<group>"; };
+		81421DE418941EBA00E5AA79 /* Pawn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Pawn.cpp; sourceTree = "<group>"; };
+		81421DE518941EBA00E5AA79 /* Pawn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pawn.h; sourceTree = "<group>"; };
+		81421DE718941F6900E5AA79 /* Rook.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rook.cpp; sourceTree = "<group>"; };
+		81421DE818941F6900E5AA79 /* Rook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rook.h; sourceTree = "<group>"; };
+		81421DEA1894248800E5AA79 /* Bishop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bishop.cpp; sourceTree = "<group>"; };
+		81421DEB1894248800E5AA79 /* Bishop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bishop.h; sourceTree = "<group>"; };
+		81421DED189427B000E5AA79 /* Queen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Queen.cpp; sourceTree = "<group>"; };
+		81421DEE189427B000E5AA79 /* Queen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Queen.h; sourceTree = "<group>"; };
+		81421DF01894286000E5AA79 /* King.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = King.cpp; sourceTree = "<group>"; };
+		81421DF11894286000E5AA79 /* King.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = King.h; sourceTree = "<group>"; };
+		81421DF3189428A900E5AA79 /* Knight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Knight.cpp; sourceTree = "<group>"; };
+		81421DF4189428A900E5AA79 /* Knight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Knight.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -470,12 +488,24 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				81421DF3189428A900E5AA79 /* Knight.cpp */,
+				81421DF4189428A900E5AA79 /* Knight.h */,
+				81421DF01894286000E5AA79 /* King.cpp */,
+				81421DF11894286000E5AA79 /* King.h */,
+				81421DED189427B000E5AA79 /* Queen.cpp */,
+				81421DEE189427B000E5AA79 /* Queen.h */,
+				81421DEA1894248800E5AA79 /* Bishop.cpp */,
+				81421DEB1894248800E5AA79 /* Bishop.h */,
+				81421DE718941F6900E5AA79 /* Rook.cpp */,
+				81421DE818941F6900E5AA79 /* Rook.h */,
 				81421DD91893ABA000E5AA79 /* main.cpp */,
 				81421DD41893AA6000E5AA79 /* Def.h */,
 				81421DD51893AA6000E5AA79 /* ofApp.cpp */,
 				81421DD61893AA6000E5AA79 /* ofApp.h */,
 				81421DDB1893ACBD00E5AA79 /* Man.cpp */,
 				81421DDC1893ACBD00E5AA79 /* Man.h */,
+				81421DE418941EBA00E5AA79 /* Pawn.cpp */,
+				81421DE518941EBA00E5AA79 /* Pawn.h */,
 				81421DDE1893AD5100E5AA79 /* Board.cpp */,
 				81421DDF1893AD5100E5AA79 /* Board.h */,
 				81421DE11893AFD600E5AA79 /* Tuio.cpp */,
@@ -592,11 +622,17 @@
 				81421DB01893AA4C00E5AA79 /* ofxOscSender.cpp in Sources */,
 				81421DB51893AA4C00E5AA79 /* OscPrintReceivedElements.cpp in Sources */,
 				81421DCA1893AA4E00E5AA79 /* ofxParamToggle.cpp in Sources */,
+				81421DE918941F6900E5AA79 /* Rook.cpp in Sources */,
 				81421DB71893AA4C00E5AA79 /* OscTypes.cpp in Sources */,
 				81421DAE1893AA4C00E5AA79 /* ofxOscParameterSync.cpp in Sources */,
 				81421D7B1893AA4A00E5AA79 /* ofxGuiGroup.cpp in Sources */,
+				81421DEC1894248800E5AA79 /* Bishop.cpp in Sources */,
+				81421DE618941EBA00E5AA79 /* Pawn.cpp in Sources */,
+				81421DF21894286000E5AA79 /* King.cpp in Sources */,
 				81421DB21893AA4C00E5AA79 /* NetworkingUtils.cpp in Sources */,
 				81421DAD1893AA4C00E5AA79 /* ofxOscMessage.cpp in Sources */,
+				81421DF5189428A900E5AA79 /* Knight.cpp in Sources */,
+				81421DEF189427B000E5AA79 /* Queen.cpp in Sources */,
 				81421D7F1893AA4A00E5AA79 /* ofxSliderGroup.cpp in Sources */,
 				81421DE31893AFD600E5AA79 /* Tuio.cpp in Sources */,
 				81421DE01893AD5100E5AA79 /* Board.cpp in Sources */,

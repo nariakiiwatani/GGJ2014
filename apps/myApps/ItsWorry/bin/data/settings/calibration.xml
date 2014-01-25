@@ -1,5 +1,5 @@
 <calibration>
-	<enable>1</enable>
+	<enable>0</enable>
 	<cap_pos>0.0867347, 0.0408163</cap_pos>
 	<cap_size>0.515306, 0.908163</cap_size>
 	<cap_draw_pos>0, 0</cap_draw_pos>

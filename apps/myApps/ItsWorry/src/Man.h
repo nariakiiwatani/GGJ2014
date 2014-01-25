@@ -25,6 +25,9 @@ public:
 	void draw(float x, float y, float w, float h);
 	virtual void updatePossibleMoves()=0;
 protected:
+	void checkLine(int from_x, int from_y, int move_x, int move_y);
+	void checkOne(int from_x, int from_y, int move_x, int move_y);
+protected:
 	Board *board_;
 	ofTexture texture_;
 	int player_;
@@ -32,16 +35,6 @@ protected:
 	Pos current_pos_;
 	vector<Pos> possible_move_;
 	vector<Pos> move_history_;
-};
-
-
-class Pawn : public Man
-{
-public:
-	Pawn() {
-		ofLoadImage(texture_, "pawn.png");
-	}
-	void updatePossibleMoves();
 };
 
 /* EOF */

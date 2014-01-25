@@ -54,73 +54,40 @@ bool Man::isLastMoveSafe()
 	return false;
 }
 
-
-void Pawn::updatePossibleMoves()
+void Man::checkOne(int from_x, int from_y, int move_x, int move_y)
 {
-	possible_move_.clear();
-	int x = move_history_.back().first;
-	int y = move_history_.back().second;
-	Man *target = NULL;
-	int next_x, next_y;
-	switch(player_) {
-		case 0:
-			next_x = x;
-			next_y = y-1;
-			break;
-		case 1:
-			next_x = x;
-			next_y = y+1;
-			break;
-	}
-	if(board_->isInBounds(next_x, next_y) && !board_->getMan(next_x, next_y)) {
-		possible_move_.push_back(pair<int,int>(next_x,next_y));
-		if(!isMoved()) {
-			switch(player_) {
-				case 0:
-					next_x = x;
-					next_y = y-2;
-					break;
-				case 1:
-					next_x = x;
-					next_y = y+2;
-					break;
-			}
-			if(board_->isInBounds(next_x, next_y) && !board_->getMan(next_x, next_y)) {
-				possible_move_.push_back(pair<int,int>(next_x,next_y));
+	int next_x = from_x+move_x;
+	int next_y = from_y+move_y;
+	if(board_->isInBounds(next_x, next_y)) {
+		Man *target = board_->getManPrev(next_x, next_y);
+		if(target) {
+			if(target->getSide() != getSide()) {
+				possible_move_.push_back(Pos(next_x,next_y));
 			}
 		}
-	}
-	switch(player_) {
-		case 0:
-			next_x = x+1;
-			next_y = y-1;
-			break;
-		case 1:
-			next_x = x-1;
-			next_y = y+1;
-			break;
-	}
-	if(board_->isInBounds(next_x, next_y)) {
-		Man *target = board_->getMan(next_x, next_y);
-		if(target && target->getSide() != getSide()) {
-			possible_move_.push_back(pair<int,int>(next_x,next_y));
+		else {
+			possible_move_.push_back(Pos(next_x,next_y));
 		}
 	}
-	switch(player_) {
-		case 0:
-			next_x = x-1;
-			next_y = y-1;
+}
+
+void Man::checkLine(int from_x, int from_y, int move_x, int move_y)
+{
+	int next_x = from_x+move_x;
+	int next_y = from_y+move_y;
+	while(board_->isInBounds(next_x, next_y)) {
+		Man *target = board_->getManPrev(next_x, next_y);
+		if(target) {
+			if(target->getSide() != getSide()) {
+				possible_move_.push_back(Pos(next_x,next_y));
+			}
 			break;
-		case 1:
-			next_x = x+1;
-			next_y = y+1;
-			break;
-	}
-	if(board_->isInBounds(next_x, next_y)) {
-		Man *target = board_->getMan(next_x, next_y);
-		if(target && target->getSide() != getSide()) {
-			possible_move_.push_back(pair<int,int>(next_x,next_y));
 		}
+		else {
+			possible_move_.push_back(Pos(next_x,next_y));
+		}
+		next_x += move_x;
+		next_y += move_y;
 	}
 }
 

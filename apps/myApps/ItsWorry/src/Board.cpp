@@ -1,37 +1,18 @@
 #include "Board.h"
 #include "ofGraphics.h"
+#include "Pawn.h"
+#include "Rook.h"
+#include "Knight.h"
+#include "Bishop.h"
+#include "Queen.h"
+#include "King.h"
 
 Board::Board()
 {
 	for(int p = 0; p < 2; ++p) {
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
-		man_[p].push_back(new Pawn());
+		for(int i = 0; i < 26; ++i) {
+			man_[p].push_back(new King());
+		}
 	}
 	for(int p = 0; p < 2; ++p) {
 		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
@@ -56,10 +37,8 @@ void Board::clear()
 {
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
+			board_prev_[i][j] = NULL;
 			board_[i][j] = NULL;
-			board_filter_[i][j].first = NULL;
-			board_filter_[i][j].second = 0;
-			board_filter_prev_[i][j] = NULL;
 		}
 	}
 }
@@ -104,17 +83,21 @@ void Board::setMan(int x, int y, int player, int id)
 	else {
 		man->setPos(x, y);
 	}
-	board_filter_[x][y].first = man;
-	if(board_filter_prev_[x][y] != man) {
-		board_filter_[x][y].second = 0;
-	}
-//	board_[x][y] = man;
+	board_[x][y] = man;
 }
 
 Man* Board::getMan(int x, int y)
 {
 	if(0 <= x && x < GRID_X && 0 <= y && y < GRID_Y) {
 		return board_[x][y];
+	}
+	return NULL;
+}
+
+Man* Board::getManPrev(int x, int y)
+{
+	if(0 <= x && x < GRID_X && 0 <= y && y < GRID_Y) {
+		return board_prev_[x][y];
 	}
 	return NULL;
 }
@@ -131,27 +114,8 @@ void Board::prepare()
 {
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
-			board_filter_prev_[i][j] = board_filter_[i][j].first;
-			board_filter_[i][j].first = NULL;
-		}
-	}
-}
-
-void Board::update()
-{
-	for(int i = 0; i < GRID_X; ++i) {
-		for(int j = 0; j < GRID_Y; ++j) {
-			if(board_filter_[i][j].first == NULL && board_filter_prev_[i][j] != NULL) {
-				board_filter_[i][j].second = 0;
-			}
-		}
-	}
-	static const int FILTER_LENGTH = 90;
-	for(int i = 0; i < GRID_X; ++i) {
-		for(int j = 0; j < GRID_Y; ++j) {
-			if(++board_filter_[i][j].second >= FILTER_LENGTH) {
-				board_[i][j] = board_filter_[i][j].first;
-			}
+			board_prev_[i][j] = board_[i][j];
+			board_[i][j] = NULL;
 		}
 	}
 }
