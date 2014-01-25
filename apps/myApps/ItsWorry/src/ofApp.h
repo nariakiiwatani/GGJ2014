@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxParamEdit.h"
+#include "Tuio.h"
+#include "Board.h"
 
 class ofApp : public ofBaseApp{
 
@@ -20,4 +22,17 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 private:
+	void reset();
+private:
+	Board board_;
+	Tuio tuio_;
+	ofxParamEdit param_;
+	
+	ofVec2f board_pos_[2];
+	ofVec2f board_size_[2];
+	ofVec2f cap_pos_;
+	ofVec2f cap_size_;
+	ofVec2f cap_draw_pos_;
+	ofVec2f cap_draw_size_;
+	bool calibration_;
 };

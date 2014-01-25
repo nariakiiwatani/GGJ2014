@@ -35,6 +35,9 @@
 		81421DCB1893AA4E00E5AA79 /* ofxParamVecSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DC41893AA4E00E5AA79 /* ofxParamVecSlider.cpp */; };
 		81421DD71893AA6000E5AA79 /* ofApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DD51893AA6000E5AA79 /* ofApp.cpp */; };
 		81421DDA1893ABA000E5AA79 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DD91893ABA000E5AA79 /* main.cpp */; };
+		81421DDD1893ACBD00E5AA79 /* Man.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DDB1893ACBD00E5AA79 /* Man.cpp */; };
+		81421DE01893AD5100E5AA79 /* Board.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DDE1893AD5100E5AA79 /* Board.cpp */; };
+		81421DE31893AFD600E5AA79 /* Tuio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81421DE11893AFD600E5AA79 /* Tuio.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -86,7 +89,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		81421D641893A91500E5AA79 /* OhinaSwitchDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = OhinaSwitchDebug.app; path = ItsWorryDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		81421D641893A91500E5AA79 /* ItsWorry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ItsWorry.app; path = /Users/nariakiiwatani/Works/GGJ2014/apps/myApps/ItsWorry/bin/ItsWorry.app; sourceTree = "<absolute>"; };
 		81421D681893AA4A00E5AA79 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
 		81421D691893AA4A00E5AA79 /* ofxBaseGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBaseGui.h; sourceTree = "<group>"; };
 		81421D6A1893AA4A00E5AA79 /* ofxButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxButton.cpp; sourceTree = "<group>"; };
@@ -158,6 +161,12 @@
 		81421DD51893AA6000E5AA79 /* ofApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofApp.cpp; sourceTree = "<group>"; };
 		81421DD61893AA6000E5AA79 /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofApp.h; sourceTree = "<group>"; };
 		81421DD91893ABA000E5AA79 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		81421DDB1893ACBD00E5AA79 /* Man.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Man.cpp; sourceTree = "<group>"; };
+		81421DDC1893ACBD00E5AA79 /* Man.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Man.h; sourceTree = "<group>"; };
+		81421DDE1893AD5100E5AA79 /* Board.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Board.cpp; sourceTree = "<group>"; };
+		81421DDF1893AD5100E5AA79 /* Board.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Board.h; sourceTree = "<group>"; };
+		81421DE11893AFD600E5AA79 /* Tuio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tuio.cpp; sourceTree = "<group>"; };
+		81421DE21893AFD600E5AA79 /* Tuio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tuio.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -455,7 +464,6 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				81421D641893A91500E5AA79 /* OhinaSwitchDebug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -466,6 +474,12 @@
 				81421DD41893AA6000E5AA79 /* Def.h */,
 				81421DD51893AA6000E5AA79 /* ofApp.cpp */,
 				81421DD61893AA6000E5AA79 /* ofApp.h */,
+				81421DDB1893ACBD00E5AA79 /* Man.cpp */,
+				81421DDC1893ACBD00E5AA79 /* Man.h */,
+				81421DDE1893AD5100E5AA79 /* Board.cpp */,
+				81421DDF1893AD5100E5AA79 /* Board.h */,
+				81421DE11893AFD600E5AA79 /* Tuio.cpp */,
+				81421DE21893AFD600E5AA79 /* Tuio.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -498,7 +512,7 @@
 			);
 			name = ItsWorry;
 			productName = myOFApp;
-			productReference = 81421D641893A91500E5AA79 /* OhinaSwitchDebug.app */;
+			productReference = 81421D641893A91500E5AA79 /* ItsWorry.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -584,12 +598,15 @@
 				81421DB21893AA4C00E5AA79 /* NetworkingUtils.cpp in Sources */,
 				81421DAD1893AA4C00E5AA79 /* ofxOscMessage.cpp in Sources */,
 				81421D7F1893AA4A00E5AA79 /* ofxSliderGroup.cpp in Sources */,
+				81421DE31893AFD600E5AA79 /* Tuio.cpp in Sources */,
+				81421DE01893AD5100E5AA79 /* Board.cpp in Sources */,
 				81421DDA1893ABA000E5AA79 /* main.cpp in Sources */,
 				81421D7C1893AA4A00E5AA79 /* ofxLabel.cpp in Sources */,
 				81421D7D1893AA4A00E5AA79 /* ofxPanel.cpp in Sources */,
 				81421DC61893AA4E00E5AA79 /* ofxParamColorSlider.cpp in Sources */,
 				81421D801893AA4A00E5AA79 /* ofxToggle.cpp in Sources */,
 				81421D7E1893AA4A00E5AA79 /* ofxSlider.cpp in Sources */,
+				81421DDD1893ACBD00E5AA79 /* Man.cpp in Sources */,
 				81421DC91893AA4E00E5AA79 /* ofxParamSlider.cpp in Sources */,
 				81421DAF1893AA4C00E5AA79 /* ofxOscReceiver.cpp in Sources */,
 				81421D7A1893AA4A00E5AA79 /* ofxButton.cpp in Sources */,
