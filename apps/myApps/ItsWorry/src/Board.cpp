@@ -90,12 +90,12 @@ void Board::setMan(int x, int y, int player, int id)
 		Pos pos = man->getPos();
 		if(pos.first != x || pos.second != y) {
 			board_prev_[x][y] = board_last_[x][y];
+			man->updatePossibleMoves();
 			for(int i = 0; i < GRID_X; ++i) {
 				for(int j = 0; j < GRID_Y; ++j) {
 					board_last_[i][j] = NULL;
 				}
 			}
-			man->updatePossibleMoves();
 			man->moveTo(x, y);
 			last_moved_ = man;
 			moved_frame_ = true;
@@ -157,8 +157,8 @@ void Board::draw(float x, float y, float w, float h)
 	float interval_y = h/(float)GRID_Y;
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
-			if(board_[i][j]) {
-				board_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
+			if(board_last_[i][j]) {
+				board_last_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
 			}
 		}
 	}
@@ -173,9 +173,9 @@ void Board::drawForPlayer(int p, float x, float y, float w, float h)
 	float interval_y = h/(float)GRID_Y;
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
-			if(board_[i][j]) {
-				if(board_[i][j]->getSide() == p) {
-					board_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
+			if(board_last_[i][j]) {
+				if(board_last_[i][j]->getSide() == p) {
+					board_last_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
 				}
 				else {
 					ofPushStyle();
@@ -191,7 +191,7 @@ void Board::drawForPlayer(int p, float x, float y, float w, float h)
 
 void Board::drawLastMoved(int p, float x, float y, float w, float h)
 {
-	if(last_moved_ && last_moved_ == getMan(last_moved_->getPos().first, last_moved_->getPos().second)) {
+	if(last_moved_ && last_moved_ == board_last_[last_moved_->getPos().first][last_moved_->getPos().second]) {
 		ofPushMatrix();
 		ofTranslate(x, y);
 		float interval_x = w/(float)GRID_X;
@@ -212,10 +212,10 @@ void Board::drawLastMoved(int p, float x, float y, float w, float h)
 			last_moved_->draw(i*interval_x, j*interval_y, interval_x, interval_y);
 		}
 		else {
-			ofPushStyle();
-			ofSetColor(ofColor::gray);
-			ofRect(i*interval_x, j*interval_y, interval_x, interval_y);
-			ofPopStyle();
+//			ofPushStyle();
+//			ofSetColor(ofColor::gray);
+//			ofRect(i*interval_x, j*interval_y, interval_x, interval_y);
+//			ofPopStyle();
 		}
 		ofPopMatrix();
 	}
@@ -225,7 +225,7 @@ bool Board::doubt()
 {
 	doubt_frame_ = 0;
 	if(last_moved_
-	   && last_moved_ == getMan(last_moved_->getPos().first, last_moved_->getPos().second) 
+	   && last_moved_ == board_last_[last_moved_->getPos().first][last_moved_->getPos().second] 
 	   && !last_moved_->isLastMoveSafe()) {
 			return true;
 	}

@@ -76,29 +76,59 @@ void ofApp::exportFile(int side)
 {
 	ofSetDataPathRoot("~/Sites/GGJ2014/");
 	string exp = "{\"board\":[";
-	for(int y = 0; y < Board::GRID_Y; ++y) {
-		exp += "[";
-		for(int x = 0; x < Board::GRID_X; ++x) {
-			Man *man = board_.getMan(x, y);
-			int number;
-			if(!man) {
-				number = 0;
+	switch(side) {
+		case 0:
+			for(int y = 0; y < Board::GRID_Y; ++y) {
+				exp += "[";
+				for(int x = 0; x < Board::GRID_X; ++x) {
+					Man *man = board_.getMan(x, y);
+					int number;
+					if(!man) {
+						number = 0;
+					}
+					else if(man->getSide() != side) {
+						number = -1;
+					}
+					else {
+						number = man->getTypeId()+1;
+					}
+					exp += ofToString(number);
+					if(x != Board::GRID_X-1) {
+						exp += ",";
+					}
+				}
+				exp += "]";
+				if(y != Board::GRID_Y-1) {
+					exp += ",";
+				}
 			}
-			else if(man->getSide() != side) {
-				number = -1;
+			break;
+		case 1:
+			for(int y = Board::GRID_Y-1; y >= 0; --y) {
+				exp += "[";
+				for(int x = Board::GRID_X-1; x >= 0; --x) {
+					Man *man = board_.getMan(x, y);
+					int number;
+					if(!man) {
+						number = 0;
+					}
+					else if(man->getSide() != side) {
+						number = -1;
+					}
+					else {
+						number = man->getTypeId()+1;
+					}
+					exp += ofToString(number);
+					if(x != 0) {
+						exp += ",";
+					}
+				}
+				exp += "]";
+				if(y != 0) {
+					exp += ",";
+				}
 			}
-			else {
-				number = man->getTypeId()+1;
-			}
-			exp += ofToString(number);
-			if(x != Board::GRID_X-1) {
-				exp += ",";
-			}
-		}
-		exp += "]";
-		if(y != Board::GRID_Y-1) {
-			exp += ",";
-		}
+			break;
 	}
 	exp += "]}";
 
