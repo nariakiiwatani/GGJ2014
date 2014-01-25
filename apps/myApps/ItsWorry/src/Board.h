@@ -26,6 +26,7 @@ public:
 	Man* getManPrev(int x, int y);
 	vector<Pos> getMovablePos(Man *man);
 	Man* getLastMoved() { return last_moved_; }
+	bool isMovedFrame();
 	
 private:
 	Man *board_[GRID_X][GRID_Y];
@@ -34,6 +35,7 @@ private:
 	vector<Man*> man_[2];
 	Man *last_moved_;
 	int doubt_frame_;
+	bool moved_frame_;
 };
 
 /* EOF */

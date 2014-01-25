@@ -31,7 +31,7 @@ void Tuio::update()
 
 int Tuio::getManIdFromTiuoId(int tuio_id)
 {
-	return tuio_id;
+	return tuio_id-7;
 }
 
 void Tuio::drawDebug(float x, float y, float w, float h)

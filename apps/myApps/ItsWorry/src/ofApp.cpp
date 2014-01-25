@@ -37,19 +37,27 @@ void ofApp::update(){
 		int player = (90<=d.angle&&d.angle<270)?1:0;
 		board_.setMan(x, y, player, d.id);
 	}
+	if(board_.isMovedFrame()) {
+		exportFile(0);
+		exportFile(1);
+	}
+	else if(ofGetFrameNum()%30 == 0) {
+		exportFile(0);
+		exportFile(1);
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofBackground(0);
-	ofPushStyle();
-	ofSetColor(ofColor::white);
+	ofBackground(128);
 	for(int i = 0; i < 2; ++i) {
+		ofPushStyle();
+		ofSetColor(ofColor::black);
 		board_.drawGrid(board_pos_[i].x, board_pos_[i].y, board_size_[i].x, board_size_[i].y);
+		ofPopStyle();
 		board_.drawForPlayer(i, board_pos_[i].x, board_pos_[i].y, board_size_[i].x, board_size_[i].y);
 		board_.drawLastMoved(i, board_pos_[i].x, board_pos_[i].y, board_size_[i].x, board_size_[i].y);
 	}
-	ofPopStyle();
 	
 	if(calibration_) {
 		tuio_.drawDebug(cap_draw_pos_.x, cap_draw_pos_.y, cap_draw_size_.x, cap_draw_size_.y);
@@ -124,8 +132,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	exportFile(0);
-	exportFile(1);
+	board_.doubt();
 }
 
 //--------------------------------------------------------------

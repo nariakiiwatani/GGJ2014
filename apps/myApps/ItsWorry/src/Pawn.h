@@ -5,9 +5,6 @@
 class Pawn : public Man
 {
 public:
-	Pawn() {
-		ofLoadImage(texture_, "pawn.png");
-	}
 	void updatePossibleMoves();
 	bool isJump();
 	int getTypeId() { return TYPE_PAWN; }

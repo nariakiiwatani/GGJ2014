@@ -2,17 +2,32 @@
 #include "ofGraphics.h"
 #include "Board.h"
 
+namespace {
+	ofTexture textures_[TYPE_NUM][2];
+	void loadTex() {
+		for(int i = 0; i < 2; ++i) {
+			for(int j = TYPE_PAWN; j < TYPE_NUM; ++j) {
+				ofLoadImage(textures_[j][i], "p"+ofToString(i)+"/"+ofToString(j+1)+".png");
+			}
+		}
+	}
+}
+void Man::loadTexture()
+{
+	loadTex();
+}
+
 void Man::draw(float x, float y, float w, float h)
 {
 	switch(player_) {
 		case 0:
-			texture_.draw(x,y,w,h);
+			textures_[getTypeId()][player_].draw(x,y,w,h);
 			break;
 		case 1:
 			ofPushMatrix();
 			ofTranslate(x+w, y+h);
 			ofRotate(180);
-			texture_.draw(0,0,w,h);
+			textures_[getTypeId()][player_].draw(0,0,w,h);
 			ofPopMatrix();
 			break;
 	}

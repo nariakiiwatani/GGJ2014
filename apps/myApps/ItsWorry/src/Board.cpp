@@ -9,10 +9,22 @@
 
 Board::Board()
 {
+	Man::loadTexture();
 	for(int p = 0; p < 2; ++p) {
-		for(int i = 0; i < 26; ++i) {
+		for(int i = 0; i < 8; ++i) {
 			man_[p].push_back(new Pawn());
 		}
+		for(int i = 0; i < 2; ++i) {
+			man_[p].push_back(new Rook());
+		}
+		for(int i = 0; i < 2; ++i) {
+			man_[p].push_back(new Knight());
+		}
+		for(int i = 0; i < 2; ++i) {
+			man_[p].push_back(new Bishop());
+		}
+		man_[p].push_back(new Queen());
+		man_[p].push_back(new King());
 	}
 	for(int p = 0; p < 2; ++p) {
 		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
@@ -42,6 +54,7 @@ void Board::clear()
 			board_[i][j] = NULL;
 		}
 	}
+	moved_frame_ = false;
 }
 
 void Board::reset()
@@ -85,12 +98,18 @@ void Board::setMan(int x, int y, int player, int id)
 			man->updatePossibleMoves();
 			man->moveTo(x, y);
 			last_moved_ = man;
+			moved_frame_ = true;
 		}
 	}
 	else {
 		man->setPos(x, y);
 	}
 	board_[x][y] = man;
+}
+
+bool Board::isMovedFrame()
+{
+	return moved_frame_;
 }
 
 Man* Board::getMan(int x, int y)
@@ -183,13 +202,14 @@ void Board::drawLastMoved(int p, float x, float y, float w, float h)
 		if(last_moved_->getSide() == p) {
 			ofPushStyle();
 			if(last_moved_->isLastMoveSafe()) {
-				ofSetColor(ofColor::blue);
+				ofSetColor(ofColor::green);
 			}
 			else {
-				ofSetColor(ofColor::red);
+				ofSetColor(ofColor::yellow);
 			}
-			last_moved_->draw(i*interval_x, j*interval_y, interval_x, interval_y);
+			ofRect(i*interval_x, j*interval_y, interval_x, interval_y);
 			ofPopStyle();
+			last_moved_->draw(i*interval_x, j*interval_y, interval_x, interval_y);
 		}
 		else {
 			ofPushStyle();

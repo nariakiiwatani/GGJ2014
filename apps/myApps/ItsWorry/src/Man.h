@@ -1,8 +1,6 @@
 #pragma once
 
-#include "ofTexture.h"
 #include "ofImage.h"
-
 
 typedef pair<int,int> Pos;
 class Board;
@@ -14,13 +12,14 @@ enum {
 	TYPE_KNIGHT,
 	TYPE_BISHOP,
 	TYPE_QUEEN,
-	TYPE_KING
+	TYPE_KING,
+	TYPE_NUM
 };
 
 class Man
 {
 public:
-	Man(){}
+	static void loadTexture();
 	virtual ~Man(){}
 	virtual int getTypeId()=0;
 	void setBoard(Board *board) { board_=board; }
@@ -40,7 +39,6 @@ protected:
 	void checkOne(int from_x, int from_y, int move_x, int move_y);
 protected:
 	Board *board_;
-	ofTexture texture_;
 	int player_;
 	Pos initial_pos_;
 	Pos current_pos_;
