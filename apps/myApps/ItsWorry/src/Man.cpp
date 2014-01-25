@@ -1,5 +1,6 @@
 #include "Man.h"
 #include "ofGraphics.h"
+#include "Board.h"
 
 void Man::draw(float x, float y, float w, float h)
 {
@@ -24,36 +25,103 @@ void Man::reset()
 
 bool Man::isMoved()
 {
-	return !move_history_.empty();
+	return move_history_.size() > 1;
+}
+
+bool Man::isPosSet()
+{
+	return move_history_.size() > 0;
 }
 
 void Man::moveTo(int x, int y)
 {
-	if(move_history_.empty()) {
-		initial_pos_ = Pos(x,y);
-		current_pos_ = Pos(x,y);
-	}
-	move_history_.push_back(Pos(x-current_pos_.first, y-current_pos_.second));
-	current_pos_ = Pos(x,y);
+	move_history_.push_back(Pos(x,y));
+}
+
+void Man::setPos(int x, int y)
+{
+	move_history_.push_back(Pos(x,y));
 }
 
 bool Man::isLastMoveSafe()
 {
 	Pos last_move = move_history_.back();
-	switch(player_) {
-		case 0:
-			break;
-		case 1:
-			last_move.first *= -1;
-			last_move.second *= -1;
-			break;
-	}
 	for(vector<Pos>::iterator it = possible_move_.begin(); it != possible_move_.end(); ++it) {
 		if(*it == last_move) {
 			return true;
 		}
 	}
 	return false;
+}
+
+
+void Pawn::updatePossibleMoves()
+{
+	possible_move_.clear();
+	int x = move_history_.back().first;
+	int y = move_history_.back().second;
+	Man *target = NULL;
+	int next_x, next_y;
+	switch(player_) {
+		case 0:
+			next_x = x;
+			next_y = y-1;
+			break;
+		case 1:
+			next_x = x;
+			next_y = y+1;
+			break;
+	}
+	if(board_->isInBounds(next_x, next_y) && !board_->getMan(next_x, next_y)) {
+		possible_move_.push_back(pair<int,int>(next_x,next_y));
+		if(!isMoved()) {
+			switch(player_) {
+				case 0:
+					next_x = x;
+					next_y = y-2;
+					break;
+				case 1:
+					next_x = x;
+					next_y = y+2;
+					break;
+			}
+			if(board_->isInBounds(next_x, next_y) && !board_->getMan(next_x, next_y)) {
+				possible_move_.push_back(pair<int,int>(next_x,next_y));
+			}
+		}
+	}
+	switch(player_) {
+		case 0:
+			next_x = x+1;
+			next_y = y-1;
+			break;
+		case 1:
+			next_x = x-1;
+			next_y = y+1;
+			break;
+	}
+	if(board_->isInBounds(next_x, next_y)) {
+		Man *target = board_->getMan(next_x, next_y);
+		if(target && target->getSide() != getSide()) {
+			possible_move_.push_back(pair<int,int>(next_x,next_y));
+		}
+	}
+	switch(player_) {
+		case 0:
+			next_x = x-1;
+			next_y = y-1;
+			break;
+		case 1:
+			next_x = x+1;
+			next_y = y+1;
+			break;
+	}
+	if(board_->isInBounds(next_x, next_y)) {
+		Man *target = board_->getMan(next_x, next_y);
+		if(target && target->getSide() != getSide()) {
+			possible_move_.push_back(pair<int,int>(next_x,next_y));
+		}
+	}
 }
 
 /* EOF */

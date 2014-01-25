@@ -5,23 +5,27 @@
 
 
 typedef pair<int,int> Pos;
+class Board;
 
 class Man
 {
 public:
+	Man(){}
 	virtual ~Man(){}
-	virtual void setup()=0;
+	void setBoard(Board *board) { board_=board; }
 	bool isLastMoveSafe();
 	void reset();
 	bool isMoved();
+	bool isPosSet();
 	void setPos(int x, int y);
 	void moveTo(int x, int y);
-	Pos getPos() { return current_pos_; }
+	Pos getPos() { return move_history_.back(); }
 	void setSide(int player) { player_=player; }
 	int getSide() { return player_; }
 	void draw(float x, float y, float w, float h);
-	vector<Pos>& getPossibleMoves() { return possible_move_; }
+	virtual void updatePossibleMoves()=0;
 protected:
+	Board *board_;
 	ofTexture texture_;
 	int player_;
 	Pos initial_pos_;
@@ -34,10 +38,10 @@ protected:
 class Pawn : public Man
 {
 public:
-	void setup() {
+	Pawn() {
 		ofLoadImage(texture_, "pawn.png");
-		possible_move_.push_back(pair<int,int>(0,-1));
 	}
+	void updatePossibleMoves();
 };
 
 /* EOF */

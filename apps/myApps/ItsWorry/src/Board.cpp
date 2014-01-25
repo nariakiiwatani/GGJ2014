@@ -36,7 +36,7 @@ Board::Board()
 	for(int p = 0; p < 2; ++p) {
 		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
 			Man *man = *it;
-			man->setup();
+			man->setBoard(this);
 		}
 	}
 	reset();
@@ -57,6 +57,9 @@ void Board::clear()
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
 			board_[i][j] = NULL;
+			board_filter_[i][j].first = NULL;
+			board_filter_[i][j].second = 0;
+			board_filter_prev_[i][j] = NULL;
 		}
 	}
 }
@@ -90,17 +93,67 @@ void Board::setMan(int x, int y, int player, int id)
 	Man *man = man_[player][id];
 	man->setSide(player);
 	
-	if(man->isMoved()) {
+	if(man->isPosSet()) {
 		Pos pos = man->getPos();
 		if(pos.first != x || pos.second != y) {
+			man->updatePossibleMoves();
 			man->moveTo(x, y);
 			last_moved_ = man;
 		}
 	}
 	else {
-		man->moveTo(x, y);
+		man->setPos(x, y);
 	}
-	board_[x][y] = man;
+	board_filter_[x][y].first = man;
+	if(board_filter_prev_[x][y] != man) {
+		board_filter_[x][y].second = 0;
+	}
+//	board_[x][y] = man;
+}
+
+Man* Board::getMan(int x, int y)
+{
+	if(0 <= x && x < GRID_X && 0 <= y && y < GRID_Y) {
+		return board_[x][y];
+	}
+	return NULL;
+}
+
+bool Board::isInBounds(int x, int y)
+{
+	if(0 <= x && x < GRID_X && 0 <= y && y < GRID_Y) {
+		return true;
+	}
+	return false;
+}
+
+void Board::prepare()
+{
+	for(int i = 0; i < GRID_X; ++i) {
+		for(int j = 0; j < GRID_Y; ++j) {
+			board_filter_prev_[i][j] = board_filter_[i][j].first;
+			board_filter_[i][j].first = NULL;
+		}
+	}
+}
+
+void Board::update()
+{
+	for(int i = 0; i < GRID_X; ++i) {
+		for(int j = 0; j < GRID_Y; ++j) {
+			if(board_filter_[i][j].first == NULL && board_filter_prev_[i][j] != NULL) {
+				board_filter_[i][j].second = 0;
+			}
+		}
+	}
+	static const int FILTER_LENGTH = 90;
+	for(int i = 0; i < GRID_X; ++i) {
+		for(int j = 0; j < GRID_Y; ++j) {
+			if(++board_filter_[i][j].second >= FILTER_LENGTH) {
+				board_[i][j] = board_filter_[i][j].first;
+			}
+		}
+	}
 }
 
 void Board::draw(float x, float y, float w, float h)
@@ -145,7 +198,7 @@ void Board::drawForPlayer(int p, float x, float y, float w, float h)
 
 void Board::drawLastMoved(int p, float x, float y, float w, float h)
 {
-	if(last_moved_) {
+	if(last_moved_ && last_moved_ == getMan(last_moved_->getPos().first, last_moved_->getPos().second)) {
 		ofPushMatrix();
 		ofTranslate(x, y);
 		float interval_x = w/(float)GRID_X;
@@ -166,7 +219,7 @@ void Board::drawLastMoved(int p, float x, float y, float w, float h)
 		}
 		else {
 			ofPushStyle();
-			ofSetColor(ofColor::white, 128);
+			ofSetColor(ofColor::gray);
 			ofRect(i*interval_x, j*interval_y, interval_x, interval_y);
 			ofPopStyle();
 		}

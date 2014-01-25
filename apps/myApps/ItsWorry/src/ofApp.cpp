@@ -28,8 +28,8 @@ void ofApp::setup(){
 void ofApp::update(){
 	tuio_.setFlame(cap_pos_.x, cap_pos_.y, cap_size_.x, cap_size_.y);
 	tuio_.update();
+	board_.prepare();
 	vector<MarkerData>& data = tuio_.getData();
-	board_.clear();
 	for(vector<MarkerData>::iterator it = data.begin(); it != data.end(); ++it) {
 		MarkerData& d = *it;
 		int x = (int)ofMap(d.pos.x, cap_pos_.x, cap_pos_.x+cap_size_.x, 0, Board::GRID_X);
@@ -37,6 +37,7 @@ void ofApp::update(){
 		int player = (90<=d.angle&&d.angle<270)?1:0;
 		board_.setMan(x, y, player, d.id);
 	}
+	board_.update();
 }
 
 //--------------------------------------------------------------
