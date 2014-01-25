@@ -5,7 +5,7 @@
 #include "Tuio.h"
 #include "Board.h"
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 
 	public:
 		void setup();
@@ -23,6 +23,8 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 private:
 	void reset();
+	void exportFile(int side);
+
 private:
 	Board board_;
 	Tuio tuio_;

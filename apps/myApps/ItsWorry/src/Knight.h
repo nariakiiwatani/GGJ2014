@@ -9,6 +9,7 @@ public:
 		ofLoadImage(texture_, "knight.png");
 	}
 	void updatePossibleMoves();
+	int getTypeId() { return TYPE_KNIGHT; }
 };
 
 /* EOF */

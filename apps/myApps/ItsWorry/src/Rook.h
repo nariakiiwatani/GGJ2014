@@ -9,6 +9,7 @@ public:
 		ofLoadImage(texture_, "rook.png");
 	}
 	void updatePossibleMoves();
+	int getTypeId() { return TYPE_ROOK; }
 };
 
 /* EOF */

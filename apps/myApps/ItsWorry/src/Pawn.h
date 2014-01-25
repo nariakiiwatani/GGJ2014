@@ -10,6 +10,7 @@ public:
 	}
 	void updatePossibleMoves();
 	bool isJump();
+	int getTypeId() { return TYPE_PAWN; }
 private:
 	bool isPromoted();
 };

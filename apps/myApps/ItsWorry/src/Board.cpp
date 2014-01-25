@@ -11,7 +11,7 @@ Board::Board()
 {
 	for(int p = 0; p < 2; ++p) {
 		for(int i = 0; i < 26; ++i) {
-			man_[p].push_back(new King());
+			man_[p].push_back(new Pawn());
 		}
 	}
 	for(int p = 0; p < 2; ++p) {
@@ -37,6 +37,7 @@ void Board::clear()
 {
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
+			board_last_[i][j] = NULL;
 			board_prev_[i][j] = NULL;
 			board_[i][j] = NULL;
 		}
@@ -75,6 +76,12 @@ void Board::setMan(int x, int y, int player, int id)
 	if(man->isPosSet()) {
 		Pos pos = man->getPos();
 		if(pos.first != x || pos.second != y) {
+			board_prev_[x][y] = board_last_[x][y];
+			for(int i = 0; i < GRID_X; ++i) {
+				for(int j = 0; j < GRID_Y; ++j) {
+					board_last_[i][j] = NULL;
+				}
+			}
 			man->updatePossibleMoves();
 			man->moveTo(x, y);
 			last_moved_ = man;
@@ -114,6 +121,9 @@ void Board::prepare()
 {
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
+			if(board_[i][j]) {
+				board_last_[i][j] = board_[i][j];
+			}
 			board_prev_[i][j] = board_[i][j];
 			board_[i][j] = NULL;
 		}
@@ -189,6 +199,17 @@ void Board::drawLastMoved(int p, float x, float y, float w, float h)
 		}
 		ofPopMatrix();
 	}
+}
+
+bool Board::doubt()
+{
+	doubt_frame_ = 0;
+	if(last_moved_
+	   && last_moved_ == getMan(last_moved_->getPos().first, last_moved_->getPos().second) 
+	   && !last_moved_->isLastMoveSafe()) {
+			return true;
+	}
+	return false;
 }
 
 

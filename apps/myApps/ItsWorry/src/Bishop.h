@@ -9,6 +9,7 @@ public:
 		ofLoadImage(texture_, "bishop.png");
 	}
 	void updatePossibleMoves();
+	int getTypeId() { return TYPE_BISHOP; }
 };
 
 /* EOF */

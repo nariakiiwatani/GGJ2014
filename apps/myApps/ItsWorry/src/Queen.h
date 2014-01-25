@@ -9,6 +9,7 @@ public:
 		ofLoadImage(texture_, "queen.png");
 	}
 	void updatePossibleMoves();
+	int getTypeId() { return TYPE_QUEEN; }
 };
 
 /* EOF */

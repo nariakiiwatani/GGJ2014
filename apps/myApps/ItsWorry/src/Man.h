@@ -7,11 +7,22 @@
 typedef pair<int,int> Pos;
 class Board;
 
+
+enum {
+	TYPE_PAWN,
+	TYPE_ROOK,
+	TYPE_KNIGHT,
+	TYPE_BISHOP,
+	TYPE_QUEEN,
+	TYPE_KING
+};
+
 class Man
 {
 public:
 	Man(){}
 	virtual ~Man(){}
+	virtual int getTypeId()=0;
 	void setBoard(Board *board) { board_=board; }
 	bool isLastMoveSafe();
 	void reset();

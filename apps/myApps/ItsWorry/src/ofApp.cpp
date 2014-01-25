@@ -28,6 +28,15 @@ void ofApp::setup(){
 void ofApp::update(){
 	tuio_.setFlame(cap_pos_.x, cap_pos_.y, cap_size_.x, cap_size_.y);
 	tuio_.update();
+	board_.prepare();
+	vector<MarkerData>& data = tuio_.getData();
+	for(vector<MarkerData>::iterator it = data.begin(); it != data.end(); ++it) {
+		MarkerData& d = *it;
+		int x = (int)ofMap(d.pos.x, cap_pos_.x, cap_pos_.x+cap_size_.x, 0, Board::GRID_X);
+		int y = (int)ofMap(d.pos.y, cap_pos_.y, cap_pos_.y+cap_size_.y, 0, Board::GRID_Y);
+		int player = (90<=d.angle&&d.angle<270)?1:0;
+		board_.setMan(x, y, player, d.id);
+	}
 }
 
 //--------------------------------------------------------------
@@ -55,6 +64,41 @@ void ofApp::reset()
 	board_.reset();
 }
 
+void ofApp::exportFile(int side)
+{
+	ofSetDataPathRoot("~/Sites/GGJ2014/");
+	string exp = "{\"board\":[";
+	for(int y = 0; y < Board::GRID_Y; ++y) {
+		exp += "[";
+		for(int x = 0; x < Board::GRID_X; ++x) {
+			Man *man = board_.getMan(x, y);
+			int number;
+			if(!man) {
+				number = 0;
+			}
+			else if(man->getSide() != side) {
+				number = -1;
+			}
+			else {
+				number = man->getTypeId()+1;
+			}
+			exp += ofToString(number);
+			if(x != Board::GRID_X-1) {
+				exp += ",";
+			}
+		}
+		exp += "]";
+		if(y != Board::GRID_Y-1) {
+			exp += ",";
+		}
+	}
+	exp += "]}";
+
+	cout << exp << endl;
+	ofBuffer buf(exp);
+	ofBufferToFile("data"+ofToString(side)+".json", buf);
+}
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	switch(key) {
@@ -80,15 +124,8 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	board_.prepare();
-	vector<MarkerData>& data = tuio_.getData();
-	for(vector<MarkerData>::iterator it = data.begin(); it != data.end(); ++it) {
-		MarkerData& d = *it;
-		int x = (int)ofMap(d.pos.x, cap_pos_.x, cap_pos_.x+cap_size_.x, 0, Board::GRID_X);
-		int y = (int)ofMap(d.pos.y, cap_pos_.y, cap_pos_.y+cap_size_.y, 0, Board::GRID_Y);
-		int player = (90<=d.angle&&d.angle<270)?1:0;
-		board_.setMan(x, y, player, d.id);
-	}
+	exportFile(0);
+	exportFile(1);
 }
 
 //--------------------------------------------------------------
