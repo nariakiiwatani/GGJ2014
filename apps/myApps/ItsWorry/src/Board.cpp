@@ -157,6 +157,7 @@ void Board::prepare()
 			board_[i][j] = NULL;
 		}
 	}
+	moved_frame_ = false;
 }
 
 void Board::draw(float x, float y, float w, float h)

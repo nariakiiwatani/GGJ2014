@@ -30,7 +30,7 @@ private:
 	Tuio tuio_;
 	ofxParamEdit param_;
 	
-	ofSoundPlayer sound_ok_, sound_ng_;
+	ofSoundPlayer sound_ok_, sound_ng_, sound_judge_;
 	
 	ofVec2f board_pos_;
 	ofVec2f board_size_;

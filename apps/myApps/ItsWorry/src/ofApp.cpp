@@ -8,8 +8,10 @@ void ofApp::setup(){
 	
 	sound_ok_.loadSound("sound/ok.mp3");
 	sound_ng_.loadSound("sound/ng.mp3");
+	sound_judge_.loadSound("sound/judge.mp3");
 	sound_ok_.setLoop(false);
 	sound_ng_.setLoop(false);
+	sound_judge_.setLoop(false);
 	
 	param_.setup("settings");
 	param_.beginGroup("preview");
@@ -50,6 +52,7 @@ void ofApp::update(){
 	if(board_.isMovedFrame()) {
 		exportFile(0);
 		exportFile(1);
+		sound_judge_.play();
 	}
 	else if(ofGetFrameNum()%30 == 0) {
 		exportFile(0);
@@ -148,7 +151,7 @@ void ofApp::exportFile(int side)
 	}
 	exp += "]}";
 
-	cout << exp << endl;
+//	cout << exp << endl;
 	ofBuffer buf(exp);
 #if defined TARGET_OSX
 	string path = string("../../../data/");
