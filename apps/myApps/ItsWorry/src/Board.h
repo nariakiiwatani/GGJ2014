@@ -32,6 +32,7 @@ private:
 	Man *board_[GRID_X][GRID_Y];
 	Man *board_prev_[GRID_X][GRID_Y];
 	Man *board_last_[GRID_X][GRID_Y];
+	int board_stable_count_[GRID_X][GRID_Y];
 	vector<Man*> man_[2];
 	Man *last_moved_;
 	int doubt_frame_;

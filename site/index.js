@@ -33,10 +33,14 @@ $(function() {
 				switch(board[i][j]){
 					case -1:
 						$("#td_"+i+"_"+j).css("background-color", "#17607D");
+						$("#td_"+i+"_"+j+" img").css("display", "none");
+						break;
 					case 0:
+						$("#td_"+i+"_"+j).css("background-color", "rgba(255,255,255,0)");
 						$("#td_"+i+"_"+j+" img").css("display", "none");
 					break;
 					default:
+						$("#td_"+i+"_"+j).css("background-color", "rgba(255,255,255,0)");
 						$("#td_"+i+"_"+j+" img").attr("src", folder+board[i][j]+".png").css("display", "inline");
 						// objImg.src = "p1/1.png";
 						break;

@@ -59,6 +59,11 @@ void Board::clear()
 
 void Board::reset()
 {
+	for(int i = 0; i < GRID_X; ++i) {
+		for(int j = 0; j < GRID_Y; ++j) {
+			board_stable_count_[i][j] = 0;
+		}
+	}
 	for(int p = 0; p < 2; ++p) {
 		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
 			Man *man = *it;
@@ -140,8 +145,13 @@ void Board::prepare()
 {
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
-			if(board_[i][j]) {
-				board_last_[i][j] = board_[i][j];
+			if(board_prev_[i][j] == board_[i][j]) {
+				if(++board_stable_count_[i][j] >= 30) {
+					board_last_[i][j] = board_[i][j];
+				}
+			}
+			else {
+				board_stable_count_[i][j] = 0;
 			}
 			board_prev_[i][j] = board_[i][j];
 			board_[i][j] = NULL;
