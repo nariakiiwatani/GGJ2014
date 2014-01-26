@@ -1,8 +1,8 @@
 <calibration>
-	<enable>0</enable>
-	<cap_pos>0.0867347, 0.0408163</cap_pos>
-	<cap_size>0.515306, 0.908163</cap_size>
-	<cap_draw_pos>0, 0</cap_draw_pos>
-	<cap_draw_size>401.633, 209.388</cap_draw_size>
+	<enable>1</enable>
+	<cap_pos>0.158163, 0.0510204</cap_pos>
+	<cap_size>0.505102, 0.892857</cap_size>
+	<cap_draw_pos>146.939, 82.6531</cap_draw_pos>
+	<cap_draw_size>842.449, 451.837</cap_draw_size>
 <calibration/>
 </calibration>

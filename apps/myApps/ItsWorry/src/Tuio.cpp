@@ -1,5 +1,6 @@
 #include "Tuio.h"
 #include "Def.h"
+#include "Board.h"
 
 void Tuio::setup()
 {
@@ -44,10 +45,20 @@ void Tuio::drawDebug(float x, float y, float w, float h)
 	ofRect(x_,y_,w_,h_);
 	for(vector<MarkerData>::iterator it = data_.begin(); it != data_.end(); ++it) {
 		MarkerData& m = *it;
-		ofPushMatrix();
+		ofPushStyle();
 		ofSetColor(ofColor::white);
 		ofDrawBitmapString(ofToString(m.id), m.pos);
-		ofPopMatrix();
+		ofPopStyle();
+	}
+	ofTranslate(x_,y_);
+	ofSetColor(ofColor::white);
+	float interval_x = w_/(float)Board::GRID_X;
+	float interval_y = h_/(float)Board::GRID_Y;
+	for(int i = 0; i <= Board::GRID_X; ++i) {
+		ofLine(i*interval_x,0, i*interval_x, h_);
+	}
+	for(int i = 0; i <= Board::GRID_Y; ++i) {
+		ofLine(0,i*interval_y, w_, i*interval_y);
 	}
 	ofPopStyle();
 	ofPopMatrix();

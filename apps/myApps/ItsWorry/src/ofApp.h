@@ -30,8 +30,13 @@ private:
 	Tuio tuio_;
 	ofxParamEdit param_;
 	
-	ofVec2f board_pos_[2];
-	ofVec2f board_size_[2];
+	ofSoundPlayer sound_ok_, sound_ng_;
+	
+	ofVec2f board_pos_;
+	ofVec2f board_size_;
+	ofVec2f board_sub_pos_[2];
+	ofVec2f board_sub_size_;
+	int board_rotate_;
 	ofVec2f cap_pos_;
 	ofVec2f cap_size_;
 	ofVec2f cap_draw_pos_;

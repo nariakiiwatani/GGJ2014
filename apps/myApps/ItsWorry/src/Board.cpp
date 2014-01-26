@@ -91,12 +91,12 @@ void Board::setMan(int x, int y, int player, int id)
 		if(pos.first != x || pos.second != y) {
 			board_prev_[x][y] = board_last_[x][y];
 			man->updatePossibleMoves();
+			man->moveTo(x, y);
 			for(int i = 0; i < GRID_X; ++i) {
 				for(int j = 0; j < GRID_Y; ++j) {
-					board_last_[i][j] = NULL;
+					board_last_[i][j] = board_[i][j];
 				}
 			}
-			man->moveTo(x, y);
 			last_moved_ = man;
 			moved_frame_ = true;
 		}

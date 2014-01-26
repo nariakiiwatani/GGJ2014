@@ -6,11 +6,21 @@ void ofApp::setup(){
 	ofSetFrameRate(30);
 	tuio_.setup();
 	
+	sound_ok_.loadSound("sound/ok.mp3");
+	sound_ng_.loadSound("sound/ng.mp3");
+	sound_ok_.setLoop(false);
+	sound_ng_.setLoop(false);
+	
 	param_.setup("settings");
+	param_.beginGroup("preview");
+	param_.addVecSlider("pos", board_pos_, ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+	param_.addVecSlider("size", board_size_, ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	for(int i = 0; i < 2; ++i) {
-		param_.addVecSlider("pos "+ofToString(i), board_pos_[i], ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
-		param_.addVecSlider("size "+ofToString(i), board_size_[i], ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+		param_.addVecSlider("sub pos "+ofToString(i), board_sub_pos_[i], ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	}
+	param_.addVecSlider("sub size", board_sub_size_, ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+//	param_.addSlider("rotate", board_rotate_, 0, 3);
+	param_.endGroup();
 	param_.beginGroup("calibration");
 	param_.addToggle("enable", calibration_);
 	param_.addVecSlider("cap pos", cap_pos_, ofVec2f(0,0), ofVec2f(1, 1));
@@ -50,13 +60,20 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofBackground(128);
+	board_.draw(board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
+	board_.drawLastMoved(0, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
+	board_.drawLastMoved(1, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
+	ofPushStyle();
+	ofSetColor(ofColor::black);
+	board_.drawGrid(board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
+	ofPopStyle();
 	for(int i = 0; i < 2; ++i) {
+		board_.drawForPlayer(i, board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
+		board_.drawLastMoved(i, board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
 		ofPushStyle();
 		ofSetColor(ofColor::black);
-		board_.drawGrid(board_pos_[i].x, board_pos_[i].y, board_size_[i].x, board_size_[i].y);
+		board_.drawGrid(board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
 		ofPopStyle();
-		board_.drawForPlayer(i, board_pos_[i].x, board_pos_[i].y, board_size_[i].x, board_size_[i].y);
-		board_.drawLastMoved(i, board_pos_[i].x, board_pos_[i].y, board_size_[i].x, board_size_[i].y);
 	}
 	
 	if(calibration_) {
@@ -74,7 +91,6 @@ void ofApp::reset()
 
 void ofApp::exportFile(int side)
 {
-	ofSetDataPathRoot("~/Sites/GGJ2014/");
 	string exp = "{\"board\":[";
 	switch(side) {
 		case 0:
@@ -134,7 +150,18 @@ void ofApp::exportFile(int side)
 
 	cout << exp << endl;
 	ofBuffer buf(exp);
-	ofBufferToFile("data"+ofToString(side)+".json", buf);
+#if defined TARGET_OSX
+	string path = string("../../../data/");
+#elif defined TARGET_ANDROID
+	string path = string("sdcard/");
+#elif defined(TARGET_LINUX) || defined(TARGET_WIN32)
+	string path = string(ofFilePath::join(ofFilePath::getCurrentExeDir(),  "data/"));
+#else
+	string path = string("data/");
+#endif
+	ofSetDataPathRoot("~/Sites/GGJ2014/");
+	bool ref = ofBufferToFile("data"+ofToString(side)+".json", buf);
+	ofSetDataPathRoot(path);
 }
 
 //--------------------------------------------------------------
@@ -162,7 +189,12 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	board_.doubt();
+	if(board_.doubt()) {
+		sound_ok_.play();
+	}
+	else {
+		sound_ng_.play();
+	}
 }
 
 //--------------------------------------------------------------
