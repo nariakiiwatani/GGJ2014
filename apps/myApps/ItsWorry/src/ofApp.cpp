@@ -173,6 +173,9 @@ void ofApp::keyPressed(int key){
 		case OF_KEY_RETURN:
 			param_.toggleOpen();
 			break;
+		case 'f':
+			ofToggleFullscreen();
+			break;
 	}
 }
 
