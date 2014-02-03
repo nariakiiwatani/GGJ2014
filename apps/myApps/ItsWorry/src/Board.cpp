@@ -1,134 +1,49 @@
 #include "Board.h"
 #include "ofGraphics.h"
 #include "Pawn.h"
-#include "Rook.h"
-#include "Knight.h"
-#include "Bishop.h"
-#include "Queen.h"
-#include "King.h"
 
 Board::Board()
 {
-	Man::loadTexture();
-	for(int p = 0; p < 2; ++p) {
-		for(int i = 0; i < 8; ++i) {
-			man_[p].push_back(new Pawn());
-		}
-		for(int i = 0; i < 2; ++i) {
-			man_[p].push_back(new Rook());
-		}
-		for(int i = 0; i < 2; ++i) {
-			man_[p].push_back(new Knight());
-		}
-		for(int i = 0; i < 2; ++i) {
-			man_[p].push_back(new Bishop());
-		}
-		man_[p].push_back(new Queen());
-		man_[p].push_back(new King());
-	}
-	for(int p = 0; p < 2; ++p) {
-		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
-			Man *man = *it;
-			man->setBoard(this);
-		}
-	}
-	reset();
+	clear();
 }
 
 Board::~Board()
 {
-	for(int p = 0; p < 2; ++p) {
-		while(!man_[p].empty()) {
-			delete man_[p].front();
-			man_[p].erase(man_[p].begin());
-		}
-	}
 }
 
 void Board::clear()
 {
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
-			board_last_[i][j] = NULL;
-			board_prev_[i][j] = NULL;
 			board_[i][j] = NULL;
 		}
 	}
-	moved_frame_ = false;
-}
-
-void Board::reset()
-{
-	for(int i = 0; i < GRID_X; ++i) {
-		for(int j = 0; j < GRID_Y; ++j) {
-			board_stable_count_[i][j] = 0;
-		}
-	}
-	for(int p = 0; p < 2; ++p) {
-		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
-			Man *man = *it;
-			man->reset();
-		}
-	}
+	is_moved_ = false;
 	last_moved_ = NULL;
-	clear();
 }
 
-void Board::setMan(int x, int y, int player, int id)
+void Board::set(int x, int y, Man *man)
 {
 	if(x < 0 || Board::GRID_X <= x || y < 0 || Board::GRID_Y <= y) {
 		ofLog(OF_LOG_WARNING, "grid index out of bounds: "+ofToString(x)+","+ofToString(y));
 		return;
 	}
-	if(player < 0 || 2 <= player) {
-		ofLog(OF_LOG_WARNING, "player index out of bounds: "+ofToString(player));
-		return;
-	}
-	if(id < 0 || man_[0].size() <= id) {
-		ofLog(OF_LOG_WARNING, "man id index out of bounds: "+ofToString(id));
-		return;
-	}
-	Man *man = man_[player][id];
-	man->setSide(player);
-	
-	if(man->isPosSet()) {
-		Pos pos = man->getPos();
-		if(pos.first != x || pos.second != y) {
-			board_prev_[x][y] = board_last_[x][y];
-			man->updatePossibleMoves();
-			man->moveTo(x, y);
-			for(int i = 0; i < GRID_X; ++i) {
-				for(int j = 0; j < GRID_Y; ++j) {
-					board_last_[i][j] = board_[i][j];
-				}
-			}
-			last_moved_ = man;
-			moved_frame_ = true;
-		}
-	}
-	else {
-		man->setPos(x, y);
-	}
 	board_[x][y] = man;
 }
 
-bool Board::isMovedFrame()
+void Board::set(Board *board)
 {
-	return moved_frame_;
+	for(int x = 0; x < GRID_X; ++x) {
+		for(int y = 0; y < GRID_Y; ++y) {
+			set(x,y,board->get(x,y));
+		}
+	}
 }
 
-Man* Board::getMan(int x, int y)
+Man* Board::get(int x, int y)
 {
 	if(0 <= x && x < GRID_X && 0 <= y && y < GRID_Y) {
 		return board_[x][y];
-	}
-	return NULL;
-}
-
-Man* Board::getManPrev(int x, int y)
-{
-	if(0 <= x && x < GRID_X && 0 <= y && y < GRID_Y) {
-		return board_prev_[x][y];
 	}
 	return NULL;
 }
@@ -141,25 +56,6 @@ bool Board::isInBounds(int x, int y)
 	return false;
 }
 
-void Board::prepare()
-{
-	for(int i = 0; i < GRID_X; ++i) {
-		for(int j = 0; j < GRID_Y; ++j) {
-			if(board_prev_[i][j] == board_[i][j]) {
-				if(++board_stable_count_[i][j] >= 30) {
-					board_last_[i][j] = board_[i][j];
-				}
-			}
-			else {
-				board_stable_count_[i][j] = 0;
-			}
-			board_prev_[i][j] = board_[i][j];
-			board_[i][j] = NULL;
-		}
-	}
-	moved_frame_ = false;
-}
-
 void Board::draw(float x, float y, float w, float h)
 {
 	ofPushMatrix();
@@ -168,8 +64,8 @@ void Board::draw(float x, float y, float w, float h)
 	float interval_y = h/(float)GRID_Y;
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
-			if(board_last_[i][j]) {
-				board_last_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
+			if(board_[i][j]) {
+				board_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
 			}
 		}
 	}
@@ -184,9 +80,9 @@ void Board::drawForPlayer(int p, float x, float y, float w, float h)
 	float interval_y = h/(float)GRID_Y;
 	for(int i = 0; i < GRID_X; ++i) {
 		for(int j = 0; j < GRID_Y; ++j) {
-			if(board_last_[i][j]) {
-				if(board_last_[i][j]->getSide() == p) {
-					board_last_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
+			if(board_[i][j]) {
+				if(board_[i][j]->getSide() == p) {
+					board_[i][j]->draw(i*interval_x, j*interval_y, interval_x, interval_y);
 				}
 				else {
 					ofPushStyle();
@@ -199,50 +95,6 @@ void Board::drawForPlayer(int p, float x, float y, float w, float h)
 	}
 	ofPopMatrix();
 }
-
-void Board::drawLastMoved(int p, float x, float y, float w, float h)
-{
-	if(last_moved_ && last_moved_ == board_last_[last_moved_->getPos().first][last_moved_->getPos().second]) {
-		ofPushMatrix();
-		ofTranslate(x, y);
-		float interval_x = w/(float)GRID_X;
-		float interval_y = h/(float)GRID_Y;
-		Pos pos = last_moved_->getPos();
-		int i = pos.first;
-		int j = pos.second;
-		if(last_moved_->getSide() == p) {
-			ofPushStyle();
-			if(last_moved_->isLastMoveSafe()) {
-				ofSetColor(ofColor::green);
-			}
-			else {
-				ofSetColor(ofColor::yellow);
-			}
-			ofRect(i*interval_x, j*interval_y, interval_x, interval_y);
-			ofPopStyle();
-			last_moved_->draw(i*interval_x, j*interval_y, interval_x, interval_y);
-		}
-		else {
-//			ofPushStyle();
-//			ofSetColor(ofColor::gray);
-//			ofRect(i*interval_x, j*interval_y, interval_x, interval_y);
-//			ofPopStyle();
-		}
-		ofPopMatrix();
-	}
-}
-
-bool Board::doubt()
-{
-	doubt_frame_ = 0;
-	if(last_moved_
-	   && last_moved_ == board_last_[last_moved_->getPos().first][last_moved_->getPos().second] 
-	   && !last_moved_->isLastMoveSafe()) {
-			return true;
-	}
-	return false;
-}
-
 
 void Board::drawGrid(float x, float y, float w, float h)
 {
@@ -259,6 +111,135 @@ void Board::drawGrid(float x, float y, float w, float h)
 	}
 	
 	ofPopMatrix();
+}
+
+BoardDiff Board::getDiff(Board *board)
+{
+	BoardDiff ret;
+	for(int x = 0; x < GRID_X; ++x) {
+		for(int y = 0; y < GRID_Y; ++y) {
+			if(board_[x][y] != board->get(x,y)) {
+				Man *man = board_[x][y];
+				if(man) {
+					BoardDiff::iterator it = ret.find(man);
+					if(it != ret.end()) {
+						(*it).second.from.x = x;
+						(*it).second.from.y = y;
+					}
+					else {
+						Diff diff;
+						diff.from.x = x;
+						diff.from.y = y;
+						ret[man] = diff;
+					}
+				}
+				man = board->get(x,y);
+				if(man) {
+					BoardDiff::iterator it = ret.find(man);
+					if(it != ret.end()) {
+						(*it).second.to.x = x;
+						(*it).second.to.y = y;
+					}
+					else {
+						Diff diff;
+						diff.to.x = x;
+						diff.to.y = y;
+						ret[man] = diff;
+					}
+				}
+			}
+		}
+	}
+	return ret;
+}
+
+void Board::merge(BoardDiff& diff)
+{
+	last_moved_ = NULL;
+	for(map<Man*,Diff>::iterator it = diff.begin(); it != diff.end(); ++it) {
+		Diff& diff = (*it).second;
+		if(diff.to.x != -1) {
+			Man *man = (*it).first;
+			is_last_move_valid_ = man->canMove(diff.from.x, diff.from.y, diff.to.x-diff.from.x, diff.to.y-diff.from.y);
+		}
+	}
+	for(map<Man*,Diff>::iterator it = diff.begin(); it != diff.end(); ++it) {
+		Diff& diff = (*it).second;
+		if(diff.from.x != -1) {
+			set(diff.from.x, diff.from.y, NULL);
+		}
+	}
+	for(map<Man*,Diff>::iterator it = diff.begin(); it != diff.end(); ++it) {
+		Diff& diff = (*it).second;
+		if(diff.to.x != -1) {
+			Man *man = (*it).first;
+			set(diff.to.x, diff.to.y, man);
+			if(man && man->getTypeId() == TYPE_PAWN) {
+				if((man->getSide()==0&&diff.to.y==0) || (man->getSide()==1&&diff.to.y==GRID_Y-1)) {
+					static_cast<Pawn*>(man)->setPromoted(true);
+					cout << "promoted" << endl;
+				}
+			}
+			man->setMoved(true);
+			last_moved_ = man;
+			cout << "(" << diff.from.x << "," << diff.from.y << ")->(" << diff.to.x << "," << diff.to.y << ")" << endl;
+		}
+	}
+}
+
+void Board::updatePromotion()
+{
+	for(int x = 0; x < GRID_X; ++x) {
+		for(int y = 0; y < GRID_Y; ++y) {
+			Man *man = board_[x][y];
+			if(man && man->getTypeId() == TYPE_PAWN) {
+				if((man->getSide()==0&&y==0) || (man->getSide()==1&&y==GRID_Y-1)) {
+					static_cast<Pawn*>(man)->setPromoted(true);
+					cout << "promoted" << endl;
+				}
+			}
+		}
+	}
+}
+
+bool Board::isLastMoveValid()
+{
+	return is_last_move_valid_;
+//	Diff& diff = last_move_.second;
+//	return last_move_.first->canMove(diff.from.x, diff.from.y, diff.to.x-diff.from.x, diff.to.y-diff.from.y);
+}
+
+void Board::removeLast()
+{
+	if(!last_moved_) {
+		return;
+	}
+	for(int x = 0; x < GRID_X; ++x) {
+		for(int y = 0; y < GRID_Y; ++y) {
+			if(board_[x][y] == last_moved_) {
+				board_[x][y] = NULL;
+			}
+		}
+	}
+	last_moved_ = NULL;
+}
+
+void StableBoard::merge(Board *board)
+{
+	for(int x = 0; x < GRID_X; ++x) {
+		for(int y = 0; y < GRID_Y; ++y) {
+			Man *man = board->get(x,y);
+			if(cache_[x][y] == man) {
+				if(++stable_count_[x][y] >= STABLE_THRESHOLD) {
+					set(x,y,man);
+				}
+			}
+			else {
+				cache_[x][y] = man;
+				stable_count_[x][y] = 0;
+			}
+		}
+	}
 }
 
 /* EOF */

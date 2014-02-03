@@ -36,37 +36,7 @@ void Man::draw(float x, float y, float w, float h)
 void Man::reset()
 {
 	move_history_.clear();
-}
-
-bool Man::isMoved()
-{
-	return move_history_.size() > 1;
-}
-
-bool Man::isPosSet()
-{
-	return move_history_.size() > 0;
-}
-
-void Man::moveTo(int x, int y)
-{
-	move_history_.push_back(Pos(x,y));
-}
-
-void Man::setPos(int x, int y)
-{
-	move_history_.push_back(Pos(x,y));
-}
-
-bool Man::isLastMoveSafe()
-{
-	Pos last_move = move_history_.back();
-	for(vector<Pos>::iterator it = possible_move_.begin(); it != possible_move_.end(); ++it) {
-		if(*it == last_move) {
-			return true;
-		}
-	}
-	return false;
+	is_moved_ = false;
 }
 
 void Man::checkOne(int from_x, int from_y, int move_x, int move_y)
@@ -74,7 +44,7 @@ void Man::checkOne(int from_x, int from_y, int move_x, int move_y)
 	int next_x = from_x+move_x;
 	int next_y = from_y+move_y;
 	if(board_->isInBounds(next_x, next_y)) {
-		Man *target = board_->getManPrev(next_x, next_y);
+		Man *target = board_->get(next_x, next_y);
 		if(target) {
 			if(target->getSide() != getSide()) {
 				possible_move_.push_back(Pos(next_x,next_y));
@@ -91,7 +61,7 @@ void Man::checkLine(int from_x, int from_y, int move_x, int move_y)
 	int next_x = from_x+move_x;
 	int next_y = from_y+move_y;
 	while(board_->isInBounds(next_x, next_y)) {
-		Man *target = board_->getManPrev(next_x, next_y);
+		Man *target = board_->get(next_x, next_y);
 		if(target) {
 			if(target->getSide() != getSide()) {
 				possible_move_.push_back(Pos(next_x,next_y));

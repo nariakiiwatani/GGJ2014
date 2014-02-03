@@ -1,6 +1,11 @@
 #include "Rook.h"
 #include "Board.h"
 
+bool Rook::canMove(int x, int y, int move_x, int move_y)
+{
+	return move_x==0 || move_y==0;
+}
+
 void Rook::updatePossibleMoves()
 {
 	possible_move_.clear();

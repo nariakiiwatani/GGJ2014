@@ -2,6 +2,16 @@
 
 #include "Man.h"
 
+struct Diff {
+	Diff(){
+		from.x =from.y = to.x = to.y = -1;
+	}
+	struct {
+		int x,y;
+	} from, to;
+};
+typedef map<Man*,Diff> BoardDiff;
+
 class Board
 {
 public:
@@ -10,33 +20,37 @@ public:
 	Board();
 	~Board();
 	void clear();
-	void reset();
-	void prepare();
-	void update();
-	void setMan(int x, int y, int player, int id);
+	BoardDiff getDiff(Board *board);
+	void merge(BoardDiff& diff);
+	bool isLastMoveValid();
+	bool isMoved() { return is_moved_; }
+	void setMoved(bool set) { is_moved_=set; }
+	void removeLast();
+	void updatePromotion();
+	void set(int x, int y, Man *man);
+	void set(Board *board);
 	void draw(float x, float y, float w, float h);
 	void drawGrid(float x, float y, float w, float h);
 	void drawForPlayer(int p, float x, float y, float w, float h);
-	void drawLastMoved(int p, float x, float y, float w, float h);
-	
-	bool doubt();
 	
 	bool isInBounds(int x, int y);
-	Man* getMan(int x, int y);
-	Man* getManPrev(int x, int y);
-	vector<Pos> getMovablePos(Man *man);
-	Man* getLastMoved() { return last_moved_; }
-	bool isMovedFrame();
+	Man* get(int x, int y);
 	
-private:
+protected:
 	Man *board_[GRID_X][GRID_Y];
-	Man *board_prev_[GRID_X][GRID_Y];
-	Man *board_last_[GRID_X][GRID_Y];
-	int board_stable_count_[GRID_X][GRID_Y];
-	vector<Man*> man_[2];
 	Man *last_moved_;
-	int doubt_frame_;
-	bool moved_frame_;
+	bool is_last_move_valid_;
+	bool is_moved_;
+};
+
+class StableBoard : public Board
+{
+public:
+	void merge(Board *board);
+private:
+	static const int STABLE_THRESHOLD = 15;
+	Man *cache_[GRID_X][GRID_Y];
+	int stable_count_[GRID_X][GRID_Y];
 };
 
 /* EOF */

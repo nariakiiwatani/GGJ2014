@@ -1,6 +1,11 @@
 #include "King.h"
 #include "Board.h"
 
+bool King::canMove(int x, int y, int move_x, int move_y)
+{
+	return max(abs(move_x),abs(move_y))==1;
+}
+
 void King::updatePossibleMoves()
 {
 	possible_move_.clear();

@@ -24,11 +24,19 @@ class ofApp : public ofBaseApp {
 private:
 	void reset();
 	void exportFile(int side);
+	bool turn();
+	bool checkValid(BoardDiff& diff);
+	void drawBoard(Board *board, float x, float y, float w, float h);
+	void drawPlayerBoard(Board *board, int side, float x, float y, float w, float h);
 
 private:
-	Board board_;
+	Board board_raw_, board_out_;
+	StableBoard board_stable_;
 	Tuio tuio_;
 	ofxParamEdit param_;
+	
+	vector<Man*> man_[2];
+	int active_side_;
 	
 	ofSoundPlayer sound_ok_, sound_ng_, sound_judge_;
 	

@@ -23,27 +23,23 @@ public:
 	virtual ~Man(){}
 	virtual int getTypeId()=0;
 	void setBoard(Board *board) { board_=board; }
-	bool isLastMoveSafe();
-	void reset();
-	bool isMoved();
-	bool isPosSet();
-	void setPos(int x, int y);
-	void moveTo(int x, int y);
-	Pos getPos() { return move_history_.back(); }
+	virtual void reset();
+	bool isMoved() { return is_moved_; }
+	void setMoved(bool set) { is_moved_=set; }
 	void setSide(int player) { player_=player; }
 	int getSide() { return player_; }
 	void draw(float x, float y, float w, float h);
 	virtual void updatePossibleMoves()=0;
+	virtual bool canMove(int x, int y, int move_x, int move_y)=0;
 protected:
 	void checkLine(int from_x, int from_y, int move_x, int move_y);
 	void checkOne(int from_x, int from_y, int move_x, int move_y);
 protected:
 	Board *board_;
 	int player_;
-	Pos initial_pos_;
-	Pos current_pos_;
 	vector<Pos> possible_move_;
 	vector<Pos> move_history_;
+	bool is_moved_;
 };
 
 /* EOF */

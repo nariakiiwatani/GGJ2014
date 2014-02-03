@@ -1,6 +1,11 @@
 #include "Queen.h"
 #include "Board.h"
 
+bool Queen::canMove(int x, int y, int move_x, int move_y)
+{
+	return move_x == 0 || move_y == 0 || abs(move_x)==abs(move_y);
+}
+
 void Queen::updatePossibleMoves()
 {
 	possible_move_.clear();

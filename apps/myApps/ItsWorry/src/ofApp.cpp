@@ -1,11 +1,41 @@
 #include "ofApp.h"
 #include "Def.h"
+#include "Pawn.h"
+#include "Rook.h"
+#include "Knight.h"
+#include "Bishop.h"
+#include "Queen.h"
+#include "King.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetFrameRate(30);
 	tuio_.setup();
-	
+
+	Man::loadTexture();
+	for(int p = 0; p < 2; ++p) {
+		for(int i = 0; i < 8; ++i) {
+			man_[p].push_back(new Pawn());
+		}
+		for(int i = 0; i < 2; ++i) {
+			man_[p].push_back(new Rook());
+		}
+		for(int i = 0; i < 2; ++i) {
+			man_[p].push_back(new Knight());
+		}
+		for(int i = 0; i < 2; ++i) {
+			man_[p].push_back(new Bishop());
+		}
+		man_[p].push_back(new Queen());
+		man_[p].push_back(new King());
+	}
+	for(int p = 0; p < 2; ++p) {
+		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
+			Man *man = *it;
+			man->setBoard(&board_out_);
+		}
+	}
+
 	sound_ok_.loadSound("sound/ok.mp3");
 	sound_ng_.loadSound("sound/ng.mp3");
 	sound_judge_.loadSound("sound/judge.mp3");
@@ -40,43 +70,32 @@ void ofApp::setup(){
 void ofApp::update(){
 	tuio_.setFlame(cap_pos_.x, cap_pos_.y, cap_size_.x, cap_size_.y);
 	tuio_.update();
-	board_.prepare();
+	
+	board_raw_.clear();
 	vector<MarkerData>& data = tuio_.getData();
 	for(vector<MarkerData>::iterator it = data.begin(); it != data.end(); ++it) {
 		MarkerData& d = *it;
 		int x = (int)ofMap(d.pos.x, cap_pos_.x, cap_pos_.x+cap_size_.x, 0, Board::GRID_X);
 		int y = (int)ofMap(d.pos.y, cap_pos_.y, cap_pos_.y+cap_size_.y, 0, Board::GRID_Y);
 		int player = (90<=d.angle&&d.angle<270)?1:0;
-		board_.setMan(x, y, player, d.id);
+		if(d.id < 0 || man_[player].size() <= d.id) {
+			ofLog(OF_LOG_WARNING, "man id out of bounds: %d", d.id);
+			continue;
+		}
+		Man *man = man_[player][d.id];
+		man->setSide(player);
+		board_raw_.set(x, y, man);
 	}
-	if(board_.isMovedFrame()) {
-		exportFile(0);
-		exportFile(1);
-		sound_judge_.play();
-	}
-	else if(ofGetFrameNum()%30 == 0) {
-		exportFile(0);
-		exportFile(1);
-	}
+	
+	board_stable_.merge(&board_raw_);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofBackground(128);
-	board_.draw(board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
-	board_.drawLastMoved(0, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
-	board_.drawLastMoved(1, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
-	ofPushStyle();
-	ofSetColor(ofColor::black);
-	board_.drawGrid(board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
-	ofPopStyle();
+	drawBoard(&board_stable_, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
 	for(int i = 0; i < 2; ++i) {
-		board_.drawForPlayer(i, board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
-		board_.drawLastMoved(i, board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
-		ofPushStyle();
-		ofSetColor(ofColor::black);
-		board_.drawGrid(board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
-		ofPopStyle();
+		drawPlayerBoard(&board_stable_, i, board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
 	}
 	
 	if(calibration_) {
@@ -87,9 +106,105 @@ void ofApp::draw(){
 	}
 }
 
+void ofApp::drawBoard(Board *board, float x, float y, float w, float h)
+{
+	board->draw(x, y, w, h);
+	//	board_out_.drawLastMoved(0, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
+	//	board_out_.drawLastMoved(1, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
+	ofPushStyle();
+	ofSetColor(ofColor::black);
+	board->drawGrid(x, y, w, h);
+	ofPopStyle();
+}
+
+void ofApp::drawPlayerBoard(Board *board, int side, float x, float y, float w, float h)
+{
+	board->drawForPlayer(side, x, y, w, h);
+	//		board_out_.drawLastMoved(i, board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
+	ofPushStyle();
+	ofSetColor(ofColor::black);
+	board->drawGrid(x, y, w, h);
+	ofPopStyle();
+}
+
+bool ofApp::turn()
+{
+	BoardDiff diff = board_out_.getDiff(&board_stable_);
+	if(diff.empty()) {
+		if(board_out_.isMoved()) {
+			if(board_out_.isLastMoveValid()) {
+				sound_ok_.play();
+				board_out_.setMoved(false);
+				cout << "valid move" << endl;
+			}
+			else {
+				sound_ng_.play();
+				board_out_.removeLast();
+				board_out_.setMoved(false);
+				cout << "invalid move" << endl;
+			}
+		}
+		else {
+			cout << "no moved" << endl;
+			return false;
+		}
+	}
+	else {
+		if(!checkValid(diff)) {
+			return false;
+		}
+//		board_out_.set(&board_stable_);
+		board_out_.merge(diff);
+		board_out_.setMoved(true);
+		cout << "moved: " << endl;
+	}
+	return true;
+}
+
+bool ofApp::checkValid(BoardDiff& diff)
+{
+	bool moved[2] = {false,false};
+	for(map<Man*,Diff>::iterator it = diff.begin(); it != diff.end(); ++it) {
+		Man *man = (*it).first;
+		Diff& diff = (*it).second;
+		int side = man->getSide();
+		if(moved[side]) {
+			cout << "invalid diff: multipul move" << endl;
+			return false;
+		}
+		moved[side] = true;
+		if(diff.from.x == -1) {
+			cout << "invalid diff: something appeared from somewhere" << endl;
+			return false;
+		}
+		if(side == active_side_) {
+			if(diff.to.x == -1) {
+				cout << "invalid diff: active side removed" << endl;
+				return false;
+			}
+		}
+		else {
+			if(diff.to.x != -1) {
+				cout << "invalid diff: opposite side moved" << endl;
+				return false;
+			}
+		}
+	}
+	return moved[active_side_];
+}
+
 void ofApp::reset()
 {
-	board_.reset();
+	for(int p = 0; p < 2; ++p) {
+		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
+			Man *man = *it;
+			man->reset();
+		}
+	}
+
+	active_side_ = 0;
+	board_out_.set(&board_stable_);
+	board_out_.updatePromotion();
 }
 
 void ofApp::exportFile(int side)
@@ -100,7 +215,7 @@ void ofApp::exportFile(int side)
 			for(int y = 0; y < Board::GRID_Y; ++y) {
 				exp += "[";
 				for(int x = 0; x < Board::GRID_X; ++x) {
-					Man *man = board_.getMan(x, y);
+					Man *man = board_stable_.get(x, y);
 					int number;
 					if(!man) {
 						number = 0;
@@ -126,7 +241,7 @@ void ofApp::exportFile(int side)
 			for(int y = Board::GRID_Y-1; y >= 0; --y) {
 				exp += "[";
 				for(int x = Board::GRID_X-1; x >= 0; --x) {
-					Man *man = board_.getMan(x, y);
+					Man *man = board_stable_.get(x, y);
 					int number;
 					if(!man) {
 						number = 0;
@@ -173,6 +288,23 @@ void ofApp::keyPressed(int key){
 		case OF_KEY_RETURN:
 			param_.toggleOpen();
 			break;
+		case '1':
+			if(active_side_ == 0 && turn()) {
+				exportFile(0);
+				exportFile(1);
+				active_side_ = 1;
+			}
+			break;
+		case '2':
+			if(active_side_ == 1 && turn()) {
+				exportFile(0);
+				exportFile(1);
+				active_side_ = 0;
+			}
+			break;
+		case 'r':
+			reset();
+			break;
 		case 'f':
 			ofToggleFullscreen();
 			break;
@@ -195,12 +327,6 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	if(board_.doubt()) {
-		sound_ok_.play();
-	}
-	else {
-		sound_ng_.play();
-	}
 }
 
 //--------------------------------------------------------------
