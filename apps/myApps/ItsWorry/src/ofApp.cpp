@@ -26,8 +26,8 @@ void ofApp::setup(){
 		for(int i = 0; i < 2; ++i) {
 			man_[p].push_back(new Bishop());
 		}
-		man_[p].push_back(new Queen());
 		man_[p].push_back(new King());
+		man_[p].push_back(new Queen());
 	}
 	for(int p = 0; p < 2; ++p) {
 		for(vector<Man*>::iterator it = man_[p].begin(); it != man_[p].end(); ++it) {
@@ -43,8 +43,12 @@ void ofApp::setup(){
 	sound_ng_.setLoop(false);
 	sound_judge_.setLoop(false);
 	
+	send_fbo_.allocate(SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGB);
+	syphon_.setName("judgement");
+	
 	param_.setup("settings");
 	param_.beginGroup("preview");
+	param_.addToggle("enable", preview_);
 	param_.addVecSlider("pos", board_pos_, ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	param_.addVecSlider("size", board_size_, ofVec2f(0,0), ofVec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	for(int i = 0; i < 2; ++i) {
@@ -88,16 +92,27 @@ void ofApp::update(){
 	}
 	
 	board_stable_.merge(&board_raw_);
+	
+	if((ofGetFrameNum()&0x0f) == 0x08) {
+		exportFile(0);
+		exportFile(1);
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+	send_fbo_.begin();
 	ofBackground(128);
 	drawBoard(&board_stable_, board_pos_.x, board_pos_.y, board_size_.x, board_size_.y);
 	for(int i = 0; i < 2; ++i) {
 		drawPlayerBoard(&board_stable_, i, board_sub_pos_[i].x, board_sub_pos_[i].y, board_sub_size_.x, board_sub_size_.y);
 	}
-	
+	send_fbo_.end();
+	syphon_.publishTexture(&send_fbo_.getTextureReference());
+
+	if(preview_) {
+		send_fbo_.draw(0,0);
+	}
 	if(calibration_) {
 		tuio_.drawDebug(cap_draw_pos_.x, cap_draw_pos_.y, cap_draw_size_.x, cap_draw_size_.y);
 	}
@@ -133,12 +148,12 @@ bool ofApp::turn()
 	if(diff.empty()) {
 		if(board_out_.isMoved()) {
 			if(board_out_.isLastMoveValid()) {
-				sound_ok_.play();
+				sound_ng_.play();
 				board_out_.setMoved(false);
 				cout << "valid move" << endl;
 			}
 			else {
-				sound_ng_.play();
+				sound_ok_.play();
 				board_out_.removeLast();
 				board_out_.setMoved(false);
 				cout << "invalid move" << endl;
@@ -156,6 +171,7 @@ bool ofApp::turn()
 //		board_out_.set(&board_stable_);
 		board_out_.merge(diff);
 		board_out_.setMoved(true);
+		sound_judge_.play();
 		cout << "moved: " << endl;
 	}
 	return true;
@@ -288,10 +304,9 @@ void ofApp::keyPressed(int key){
 		case OF_KEY_RETURN:
 			param_.toggleOpen();
 			break;
+		case 32:
 		case '1':
 			if(active_side_ == 0 && turn()) {
-				exportFile(0);
-				exportFile(1);
 				active_side_ = 1;
 			}
 			break;

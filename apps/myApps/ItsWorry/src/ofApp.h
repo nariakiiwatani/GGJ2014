@@ -4,6 +4,7 @@
 #include "ofxParamEdit.h"
 #include "Tuio.h"
 #include "Board.h"
+#include "ofxSyphon.h"
 
 class ofApp : public ofBaseApp {
 
@@ -37,6 +38,7 @@ private:
 	
 	vector<Man*> man_[2];
 	int active_side_;
+	bool preview_;
 	
 	ofSoundPlayer sound_ok_, sound_ng_, sound_judge_;
 	
@@ -50,4 +52,8 @@ private:
 	ofVec2f cap_draw_pos_;
 	ofVec2f cap_draw_size_;
 	bool calibration_;
+	
+	ofFbo send_fbo_;
+	ofxSyphonServer syphon_;
+
 };
